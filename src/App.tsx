@@ -1,35 +1,76 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import useFetch from './utils/useFetch';
+import { useState } from 'react';
+
+import './App.css';
+import { UseFetchReturn } from './utils/types';
+import { validateInput } from './utils/validateInput';
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [limit, setLimit] = useState<string | number>('');
+    const [errorMessage, setErrorMessage] = useState<string>('');
+    const { data, isLoading, error, refetch, setManual }: UseFetchReturn =
+        useFetch('https://jsonplaceholder.typicode.com/posts', {
+            params: { _limit: 1 },
+            manual: true,
+        });
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const handleLimitChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+
+        const { error, numericValue } = validateInput(value);
+        setErrorMessage(error);
+        if (value === '') {
+            setLimit('');
+        } else if (numericValue !== null) {
+            setLimit(numericValue);
+        }
+    };
+    const handleFetchData = () => {
+        refetch({ _limit: limit });
+        setManual(false);
+    };
+    const handleReFetchData = () => {
+        refetch({ _limit: 3 });
+        setManual(false);
+    };
+
+    return (
+        <div>
+            <input
+                type='text'
+                style={{ marginLeft: '10px' }}
+                onChange={handleLimitChange}
+                value={limit}
+                min={1}
+                max={100}
+                placeholder='значение лимита 1 - 100'
+                pattern='\d*'
+                title='Можно вводить только цифры'
+            />
+            {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
+            <div className='card'>
+                <button className='button' onClick={handleFetchData}>
+                    {limit === ''
+                        ? 'запросить все посты'
+                        : `запросить посты с лимитом ${limit}`}
+                </button>
+
+                <button className='button' onClick={handleReFetchData}>
+                    Перезапросить только 3 поста
+                </button>
+            </div>
+            <div className='posts'>
+                {!isLoading && !data && !error && (
+                    <div>Нажмите кнопку, чтобы загрузить данные</div>
+                )}
+                {isLoading && <div>'Загрузка...'</div>}
+                {error && <div>'Произошла ошибка'</div>}
+                {data &&
+                    !isLoading &&
+                    data.map((item) => <div key={item.id}>{item.title}</div>)}
+            </div>
+        </div>
+    );
 }
 
-export default App
+export default App;
