@@ -6,8 +6,8 @@ type UseHoverDelayReturn<T extends HTMLElement> = {
 };
 
 type UseHoverDelayOptions = {
-    delayEnter?: number; // задержка при наведении
-    delayLeave?: number; // задержка при уходе (или 0)
+    delayEnter?: number; 
+    delayLeave?: number; 
 };
 const useHover = <T extends HTMLElement>(
     options: UseHoverDelayOptions = {}
