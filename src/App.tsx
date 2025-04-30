@@ -1,35 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useViewportSize } from './utils/useViewPortSize';
+import { useWindowEvent } from './utils/useWindowEvent';
+import { useCallback } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+    const { width, height } = useViewportSize();
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const logResize = useCallback(() => {
+        console.log(
+            '💡 Окно изменилось:',
+            window.innerWidth,
+            window.innerHeight
+        );
+    }, []);
+
+    useWindowEvent('resize', logResize);
+
+    return (
+        <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+            <h2>Размер окна:</h2>
+            <p>Ширина: {width}px</p>
+            <p>Высота: {height}px</p>
+        </div>
+    );
 }
 
-export default App
+export default App;
