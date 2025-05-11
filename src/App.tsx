@@ -1,35 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import useWindowScroll from './utils/useWindowScroll';
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [scroll, scrollTo] = useWindowScroll();
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    return (
+        <div style={{ height: '200vh', padding: 500 }}>
+            <h2>Scroll position</h2>
+            <p>
+                x: {scroll.x}, y: {scroll.y}
+            </p>
+            <button onClick={() => scrollTo({ y: 0 })}>Scroll to top</button>
+            <button onClick={() => scrollTo({ y: 1000 })}>
+                Scroll to 1000px
+            </button>
+        </div>
+    );
+    // const { width, height } = useViewportSize();
+
+    // const logResize = useCallback(() => {
+    //     console.log(
+    //         '💡 Окно изменилось:',
+    //         window.innerWidth,
+    //         window.innerHeight
+    //     );
+    // }, []);
+
+    // useWindowEvent('resize', logResize);
+
+    // return (
+    //     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+    //         <h2>Размер окна:</h2>
+    //         <p>Ширина: {width}px</p>
+    //         <p>Высота: {height}px</p>
+    //     </div>
+    // );
 }
 
-export default App
+export default App;
